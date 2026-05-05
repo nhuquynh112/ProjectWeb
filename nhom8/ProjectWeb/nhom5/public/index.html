@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Demo API</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fb;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #1f3c88;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: auto;
+      }
+
+      .header {
+        background: #0f172a;
+        color: #22c55e;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      h2 {
+        margin-bottom: 15px;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: #10b981;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #10b981;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #059669;
+      }
+
+      pre {
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+        min-height: 80px;
+      }
+
+      .success {
+        background: #e6fffa;
+        border: 1px solid #34d399;
+        color: #065f46;
+      }
+
+      .error {
+        background: #ffe4e6;
+        border: 1px solid #fb7185;
+        color: #7f1d1d;
+      }
+
+      .log-box {
+        margin-top: 20px;
+        background: #0f172a;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 8px;
+        min-height: 100px;
+        font-family: monospace;
+        white-space: pre-line;
+      }
+
+      @media (max-width: 768px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>🚀 DEMO API</h1>
+
+    <div class="container">
+      <div class="header">● DEMO LIVE — Fetch API + Express</div>
+
+      <div class="grid">
+        <!-- FORM 1 -->
+        <div class="card">
+          <h2>FORM 1 — GET /api/info</h2>
+
+          <form id="form1">
+            <input type="text" id="name1" placeholder="Nhập tên..." />
+            <input type="number" id="age1" placeholder="Nhập tuổi..." />
+            <button type="submit">Gửi GET /api/info</button>
+          </form>
+
+          <pre id="result1">Kết quả hiện ở đây...</pre>
+        </div>
+
+        <!-- FORM 2 -->
+        <div class="card">
+          <h2>FORM 2 — POST /api/register</h2>
+
+          <form id="form2">
+            <input type="text" id="name2" placeholder="Nhập tên..." />
+            <input type="number" id="age2" placeholder="Nhập tuổi..." />
+            <input type="email" id="email2" placeholder="Nhập email..." />
+            <button type="submit">Gửi POST /api/register</button>
+          </form>
+
+          <pre id="result2">Kết quả hiện ở đây...</pre>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div class="log-box" id="logBox">// Log sẽ hiện ở đây...</div>
+    </div>
+
+    <script>
+      // ======================
+      // LOG FUNCTION
+      // ======================
+      function addLog(method, url) {
+        const logBox = document.getElementById("logBox");
+        const time = new Date().toISOString();
+
+        const log = `[${time}] ${method} ${url}`;
+
+        logBox.innerText = log + "\n" + logBox.innerText;
+      }
+
+      // ======================
+      // FORM 1 - GET
+      // ======================
+      document.getElementById("form1").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name1").value;
+        const age = document.getElementById("age1").value;
+
+        addLog("GET", `/api/info?name=${name}&age=${age}`);
+
+        const res = await fetch(`/api/info?name=${name}&age=${age}`);
+        const data = await res.json();
+
+        const resultBox = document.getElementById("result1");
+
+        resultBox.innerText = JSON.stringify(data, null, 2);
+
+        if (!res.ok) {
+          resultBox.className = "error";
+        } else {
+          resultBox.className = "success";
+        }
+      });
+
+      // ======================
+      // FORM 2 - POST
+      // ======================
+      document.getElementById("form2").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name2").value;
+        const age = document.getElementById("age2").value;
+        const email = document.getElementById("email2").value;
+
+        addLog("POST", "/api/register");
+
+        const res = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, age, email }),
+        });
+
+        const data = await res.json();
+
+        const resultBox = document.getElementById("result2");
+
+        resultBox.innerText = JSON.stringify(data, null, 2);
+
+        if (!res.ok) {
+          resultBox.className = "error";
+        } else {
+          resultBox.className = "success";
+        }
+      });
+    </script>
+  </body>
+</html>
